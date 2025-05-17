@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
 <div class="bg-white p-8 rounded shadow w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-6 text-center">Вход в админку</h1>
+    <h1 class="text-2xl font-bold mb-6 text-center">Вход в админ-панель</h1>
     @if ($errors->any())
         <div class="bg-red-500 text-white p-4 rounded mb-4">
             <ul>

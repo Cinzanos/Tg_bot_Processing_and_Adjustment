@@ -70,7 +70,7 @@ class UserController extends Controller
         if ($request->role === 'admin') {
             $rules['login'] = 'required|string|unique:users,login,' . $user->id;
             if ($request->filled('password')) {
-                $rules['password'] = 'string|min:8';
+                $rules['password'] = 'string|min:8|confirmed';
             }
         }
 
@@ -80,7 +80,8 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->all();
+        $data = $request->only(['full_name', 'telegram_id', 'role', 'login']);
+
         if ($request->role === 'admin' && $request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         } elseif ($request->role !== 'admin') {

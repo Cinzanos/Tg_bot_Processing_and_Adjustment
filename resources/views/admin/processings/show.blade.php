@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Обработка #{{ $processing->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Обработка</h1>
         <p><strong>Оператор:</strong> {{ $processing->user->full_name }}</p>
         <p><strong>Оборудование:</strong> {{ $processing->equipment->section }} / {{ $processing->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $processing->shift->shift_number }} ({{ $processing->shift->date }})</p>

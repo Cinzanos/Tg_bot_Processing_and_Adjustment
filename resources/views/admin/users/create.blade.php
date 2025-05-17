@@ -14,7 +14,7 @@
                 <input type="text" name="telegram_id" id="telegram_id" class="mt-1 block w-full border rounded p-2" value="{{ old('telegram_id') }}">
             </div>
             <div class="mb-4">
-                <label for="role" class="block text-sm font-medium text-gray-700">Роль</label>
+                <label for="role" class="block text-sm font-medium text-gray-700">Профессия</label>
                 <select name="role" id="role" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
                     <option value="master" {{ old('role') == 'master' ? 'selected' : '' }}>Мастер</option>
                     <option value="brigadier" {{ old('role') == 'brigadier' ? 'selected' : '' }}>Бригадир</option>

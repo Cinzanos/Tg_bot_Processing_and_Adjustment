@@ -14,7 +14,6 @@
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Станок</th>
                 <th>Смена</th>
                 <th>Время начала</th>
@@ -26,7 +25,6 @@
             <tbody>
             @foreach ($adjustmentWaitings as $waiting)
                 <tr>
-                    <td>{{ $waiting->id }}</td>
                     <td>{{ $waiting->equipment->section }} / {{ $waiting->equipment->machine_number }}</td>
                     <td>{{ $waiting->shift->shift_number }}</td>
                     <td>{{ $waiting->start_time }}</td>

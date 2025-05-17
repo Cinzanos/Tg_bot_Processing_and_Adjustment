@@ -10,8 +10,8 @@ class CreateEquipmentTable extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
-            $table->string('section'); // Номер участка
-            $table->string('machine_number'); // Номер станка
+            $table->string('section')->nullable(); // Номер участка
+            $table->string('machine_number')->nullable(); // Номер станка
             $table->timestamps();
         });
     }

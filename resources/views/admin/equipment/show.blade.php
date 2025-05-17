@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Оборудование #{{ $equipment->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Оборудование №{{ $equipment->machine_number }}</h1>
         <p><strong>Участок:</strong> {{ $equipment->section }}</p>
         <p><strong>Номер станка:</strong> {{ $equipment->machine_number }}</p>
         <div class="flex space-x-2">
@@ -18,7 +18,7 @@
                     Удалить
                 </button>
             </form>
-            <a href="{{ route('admin.downtimes.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center">
+            <a href="{{ route('admin.equipment.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Назад
             </a>

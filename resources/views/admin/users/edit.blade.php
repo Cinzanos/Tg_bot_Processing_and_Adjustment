@@ -15,7 +15,7 @@
                 <input type="text" name="telegram_id" id="telegram_id" class="mt-1 block w-full border rounded p-2" value="{{ old('telegram_id', $user->telegram_id) }}">
             </div>
             <div class="mb-4">
-                <label for="role" class="block text-sm font-medium text-gray-700">Роль</label>
+                <label for="role" class="block text-sm font-medium text-gray-700">Профессия</label>
                 <select name="role" id="role" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
                     <option value="master" {{ old('role', $user->role) == 'master' ? 'selected' : '' }}>Мастер</option>
                     <option value="brigadier" {{ old('role', $user->role) == 'brigadier' ? 'selected' : '' }}>Бригадир</option>
@@ -32,6 +32,10 @@
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700">Пароль (оставьте пустым, чтобы не менять)</label>
                     <input type="password" name="password" id="password" class="mt-1 block w-full border rounded p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Подтверждение пароля</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="mt-1 block w-full border rounded p-2">
                 </div>
             </div>
             <div class="flex space-x-2">

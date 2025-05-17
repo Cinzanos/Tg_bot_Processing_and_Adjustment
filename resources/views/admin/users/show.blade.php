@@ -2,10 +2,10 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Пользователь #{{ $user->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Пользователь: {{ $user->full_name }}</h1>
         <p><strong>ФИО:</strong> {{ $user->full_name }}</p>
         <p><strong>Telegram ID:</strong> {{ $user->telegram_id }}</p>
-        <p><strong>Роль:</strong> {{ $user->role }}</p>
+        <p><strong>Профессия:</strong> {{ $user->role }}</p>
         <div class="flex space-x-2">
             <a href="{{ route('admin.users.edit', $user) }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>

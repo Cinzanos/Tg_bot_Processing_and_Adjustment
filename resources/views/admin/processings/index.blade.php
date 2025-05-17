@@ -14,7 +14,6 @@
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Оператор</th>
                 <th>Станок</th>
                 <th>Смена</th>
@@ -27,7 +26,6 @@
             <tbody>
             @foreach ($processings as $processing)
                 <tr>
-                    <td>{{ $processing->id }}</td>
                     <td>{{ $processing->user->full_name }}</td>
                     <td>{{ $processing->equipment->section }} / {{ $processing->equipment->machine_number }}</td>
                     <td>{{ $processing->shift->shift_number }}</td>

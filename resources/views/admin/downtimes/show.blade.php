@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Простой #{{ $downtime->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Простой</h1>
         <p><strong>Инициатор:</strong> {{ $downtime->user->full_name }}</p>
         <p><strong>Оборудование:</strong> {{ $downtime->equipment->section }} / {{ $downtime->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $downtime->shift->shift_number }} ({{ $downtime->shift->date }})</p>

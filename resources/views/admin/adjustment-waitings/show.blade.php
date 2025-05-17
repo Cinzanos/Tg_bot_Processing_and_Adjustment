@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Ожидание наладки #{{ $adjustmentWaiting->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Ожидание наладки</h1>
         <p><strong>Оборудование:</strong> {{ $adjustmentWaiting->equipment->section }} / {{ $adjustmentWaiting->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $adjustmentWaiting->shift->shift_number }} ({{ $adjustmentWaiting->shift->date }})</p>
         <p><strong>Время начала:</strong> {{ $adjustmentWaiting->start_time }}</p>

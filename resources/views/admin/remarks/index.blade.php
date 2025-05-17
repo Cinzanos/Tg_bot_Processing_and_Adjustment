@@ -12,8 +12,8 @@
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Инициатор</th>
+                <th>Профессия</th>
                 <th>Станок</th>
                 <th>Смена</th>
                 <th>Текст</th>
@@ -25,8 +25,8 @@
             <tbody>
             @foreach ($remarks as $remark)
                 <tr>
-                    <td>{{ $remark->id }}</td>
                     <td>{{ $remark->user->full_name }}</td>
+                    <td>{{ $remark->user->role }}</td>
                     <td>{{ $remark->equipment->section }} / {{ $remark->equipment->machine_number }}</td>
                     <td>{{ $remark->shift->shift_number }}</td>
                     <td>{{ Str::limit($remark->text, 50) }}</td>

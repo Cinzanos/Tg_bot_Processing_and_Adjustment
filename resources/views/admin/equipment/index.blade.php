@@ -14,7 +14,6 @@
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Участок</th>
                 <th>Номер станка</th>
                 <th>Действия</th>
@@ -23,7 +22,6 @@
             <tbody>
             @foreach ($equipment as $item)
                 <tr>
-                    <td>{{ $item->id }}</td>
                     <td>{{ $item->section }}</td>
                     <td>{{ $item->machine_number }}</td>
                     <td class="space-x-2">

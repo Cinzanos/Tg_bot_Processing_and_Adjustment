@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Смена #{{ $shift->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Смена №{{ $shift->shift_number }}</h1>
         <p><strong>Номер смены:</strong> {{ $shift->shift_number }}</p>
         <p><strong>Дата:</strong> {{ $shift->date }}</p>
         <p><strong>Участок:</strong> {{ $shift->section }}</p>

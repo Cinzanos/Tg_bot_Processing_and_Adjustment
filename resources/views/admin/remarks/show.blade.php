@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Замечание #{{ $remark->id }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Замечание</h1>
         <p><strong>Инициатор:</strong> {{ $remark->user->full_name }}</p>
         <p><strong>Оборудование:</strong> {{ $remark->equipment->section }} / {{ $remark->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $remark->shift->shift_number }} ({{ $remark->shift->date }})</p>

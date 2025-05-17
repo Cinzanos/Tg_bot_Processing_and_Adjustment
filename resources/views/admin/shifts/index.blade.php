@@ -14,7 +14,6 @@
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Номер смены</th>
                 <th>Дата</th>
                 <th>Участок</th>
@@ -24,7 +23,6 @@
             <tbody>
             @foreach ($shifts as $shift)
                 <tr>
-                    <td>{{ $shift->id }}</td>
                     <td>{{ $shift->shift_number }}</td>
                     <td>{{ $shift->date }}</td>
                     <td>{{ $shift->section }}</td>
