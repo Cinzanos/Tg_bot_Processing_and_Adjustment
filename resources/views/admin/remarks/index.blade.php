@@ -26,11 +26,11 @@
             @foreach ($remarks as $remark)
                 <tr>
                     <td>{{ $remark->user->full_name }}</td>
-                    <td>{{ $remark->user->role }}</td>
-                    <td>{{ $remark->equipment->section }} / {{ $remark->equipment->machine_number }}</td>
+                    <td>{{ $remark->user->role_name }}</td>
+                    <td>{{ $remark->equipment->machine_number }}</td>
                     <td>{{ $remark->shift->shift_number }}</td>
                     <td>{{ Str::limit($remark->text, 50) }}</td>
-                    <td>{{ $remark->type }}</td>
+                    <td>{{ $remark->type_name }}</td>
                     <td>
                         @if ($remark->photo)
                             <a href="{{ $remark->photo }}" target="_blank" class="text-blue-500 hover:underline">Фото</a>

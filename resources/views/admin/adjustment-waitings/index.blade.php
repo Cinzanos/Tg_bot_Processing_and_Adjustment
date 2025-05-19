@@ -25,7 +25,7 @@
             <tbody>
             @foreach ($adjustmentWaitings as $waiting)
                 <tr>
-                    <td>{{ $waiting->equipment->section }} / {{ $waiting->equipment->machine_number }}</td>
+                    <td>{{ $waiting->equipment->machine_number }}</td>
                     <td>{{ $waiting->shift->shift_number }}</td>
                     <td>{{ $waiting->start_time }}</td>
                     <td>{{ $waiting->end_time ?? '-' }}</td>

@@ -28,7 +28,7 @@
             @foreach ($downtimes as $downtime)
                 <tr>
                     <td>{{ $downtime->user->full_name }}</td>
-                    <td>{{ $downtime->equipment->section }} / {{ $downtime->equipment->machine_number }}</td>
+                    <td>{{ $downtime->equipment->machine_number }}</td>
                     <td>{{ $downtime->shift->shift_number }}</td>
                     <td>{{ $downtime->start_time }}</td>
                     <td>{{ $downtime->end_time ?? '-' }}</td>

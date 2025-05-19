@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Пользователи</h1>
+        <h1 class="text-2xl font-bold mb-4">Сотрудники</h1>
 
         <a href="{{ route('admin.users.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
             </svg>
-            Добавить пользователя
+            Добавить сотрудника
         </a>
 
         <table class="w-full datatable">
@@ -25,7 +25,7 @@
                 <tr>
                     <td>{{ $user->full_name }}</td>
                     <td>{{ $user->telegram_id }}</td>
-                    <td>{{ $user->role }}</td>
+                    <td>{{ $user->role_name }}</td>
                     <td class="space-x-2">
                         <a href="{{ route('admin.users.show', $user) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

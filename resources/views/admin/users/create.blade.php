@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Добавить пользователя</h1>
+        <h1 class="text-2xl font-bold mb-4">Добавить сотрудника</h1>
         <form action="{{ route('admin.users.store') }}" method="POST">
             @csrf
             <div class="mb-4">
@@ -16,11 +16,11 @@
             <div class="mb-4">
                 <label for="role" class="block text-sm font-medium text-gray-700">Профессия</label>
                 <select name="role" id="role" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
-                    <option value="master" {{ old('role') == 'master' ? 'selected' : '' }}>Мастер</option>
-                    <option value="brigadier" {{ old('role') == 'brigadier' ? 'selected' : '' }}>Бригадир</option>
-                    <option value="operator" {{ old('role') == 'operator' ? 'selected' : '' }}>Оператор</option>
-                    <option value="adjuster" {{ old('role') == 'adjuster' ? 'selected' : '' }}>Наладчик</option>
-                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Админ</option>
+                    @foreach (\App\Models\User::roles() as $value => $label)
+                        <option value="{{ $value }}" {{ old('role') == $value ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div id="admin-fields" class="hidden">

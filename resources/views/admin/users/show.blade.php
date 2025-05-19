@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Пользователь: {{ $user->full_name }}</h1>
+        <h1 class="text-2xl font-bold mb-4">Сотрудник: {{ $user->full_name }}</h1>
         <p><strong>ФИО:</strong> {{ $user->full_name }}</p>
         <p><strong>Telegram ID:</strong> {{ $user->telegram_id }}</p>
         <p><strong>Профессия:</strong> {{ $user->role }}</p>

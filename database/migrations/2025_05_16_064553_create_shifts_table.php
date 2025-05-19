@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('shift_number')->nullable(); // Номер смены/бригады
             $table->date('date')->nullable(); // Дата смены
-            $table->string('section')->nullable(); // Участок
+            $table->foreignId('section_id')->constrained()->onDelete('restrict'); // Участок
             $table->timestamps();
         });
     }

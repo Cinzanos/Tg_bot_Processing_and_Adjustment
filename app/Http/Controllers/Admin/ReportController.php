@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Processing;
-use App\Models\Adjustment;
-use App\Models\AdjustmentWaiting;
-use App\Models\Downtime;
-use App\Models\Remark;
+use App\Models\Section;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OperationsExport;
 use Illuminate\Http\Request;
@@ -16,28 +13,37 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Processing::with(['user', 'equipment', 'shift'])
-            ->join('adjustments', 'processings.equipment_id', '=', 'adjustments.equipment_id')
-            ->join('adjustment_waitings', 'processings.equipment_id', '=', 'adjustment_waitings.equipment_id')
-            ->join('downtimes', 'processings.equipment_id', '=', 'downtimes.equipment_id')
-            ->join('remarks', 'processings.equipment_id', '=', 'remarks.equipment_id')
-            ->select('processings.*', 'adjustments.*', 'adjustment_waitings.*', 'downtimes.*', 'remarks.*');
+        $query = Processing::with([
+            'user',
+            'equipment.section',
+            'equipment.adjustments' => fn($q) => $q->latest()->first(),
+            'equipment.adjustmentWaitings' => fn($q) => $q->latest()->first(),
+            'equipment.downtimes' => fn($q) => $q->latest()->first(),
+            'equipment.remarks' => fn($q) => $q->latest()->first(),
+            'shift.section'
+        ]);
 
         // Фильтры
-        if ($request->has('section')) {
+        if ($request->has('section_id') && $request->section_id) {
             $query->whereHas('equipment', function ($q) use ($request) {
-                $q->where('section', $request->section);
+                $q->where('section_id', $request->section_id);
             });
         }
-        if ($request->has('date')) {
+        if ($request->has('date') && $request->date) {
             $query->whereHas('shift', function ($q) use ($request) {
                 $q->where('date', $request->date);
             });
         }
-        // Другие фильтры по аналогии
+        if ($request->has('shift_number') && $request->shift_number) {
+            $query->whereHas('shift', function ($q) use ($request) {
+                $q->where('shift_number', $request->shift_number);
+            });
+        }
 
         $operations = $query->paginate(10);
-        return view('admin.reports.index', compact('operations'));
+        $sections = Section::all();
+
+        return view('admin.reports.index', compact('operations', 'sections'));
     }
 
     public function export(Request $request)

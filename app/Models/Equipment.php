@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipment extends Model
 {
-    protected $fillable = ['section', 'machine_number'];
+    protected $fillable = ['section_id', 'machine_number'];
 
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
     public function processings()
     {
         return $this->hasMany(Processing::class);

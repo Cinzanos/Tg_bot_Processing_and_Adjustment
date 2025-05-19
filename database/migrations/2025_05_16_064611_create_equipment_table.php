@@ -10,7 +10,7 @@ class CreateEquipmentTable extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
-            $table->string('section')->nullable(); // Номер участка
+            $table->foreignId('section_id')->nullable()->constrained()->onDelete('set null');
             $table->string('machine_number')->nullable(); // Номер станка
             $table->timestamps();
         });

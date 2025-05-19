@@ -4,7 +4,7 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Наладка</h1>
         <p><strong>Наладчик:</strong> {{ $adjustment->user->full_name }}</p>
-        <p><strong>Оборудование:</strong> {{ $adjustment->equipment->section }} / {{ $adjustment->equipment->machine_number }}</p>
+        <p><strong>Оборудование:</strong>{{ $adjustment->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $adjustment->shift->shift_number }} ({{ $adjustment->shift->date }})</p>
         <p><strong>Время начала:</strong> {{ $adjustment->start_time }}</p>
         <p><strong>Время завершения:</strong> {{ $adjustment->end_time ?? '-' }}</p>

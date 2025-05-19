@@ -27,7 +27,7 @@
             @foreach ($adjustments as $adjustment)
                 <tr>
                     <td>{{ $adjustment->user->full_name }}</td>
-                    <td>{{ $adjustment->equipment->section }} / {{ $adjustment->equipment->machine_number }}</td>
+                    <td>{{ $adjustment->equipment->machine_number }}</td>
                     <td>{{ $adjustment->shift->shift_number }}</td>
                     <td>{{ $adjustment->start_time }}</td>
                     <td>{{ $adjustment->end_time ?? '-' }}</td>

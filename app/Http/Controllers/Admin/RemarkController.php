@@ -34,9 +34,18 @@ class RemarkController extends Controller
             'equipment_id' => 'required|exists:equipment,id',
             'shift_id' => 'required|exists:shifts,id',
             'text' => 'required|string',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type' => 'required|in:acceptance,handover',
         ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('remarks', 'public');
+            $data['photo'] = '/storage/' . $path;
+        }
+
+        Remark::create($data);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -67,9 +76,18 @@ class RemarkController extends Controller
             'equipment_id' => 'required|exists:equipment,id',
             'shift_id' => 'required|exists:shifts,id',
             'text' => 'required|string',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type' => 'required|in:acceptance,handover',
         ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('remarks', 'public');
+            $data['photo'] = '/storage/' . $path;
+        }
+
+        $remark->update($data);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

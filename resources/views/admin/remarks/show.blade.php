@@ -4,7 +4,7 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Замечание</h1>
         <p><strong>Инициатор:</strong> {{ $remark->user->full_name }}</p>
-        <p><strong>Оборудование:</strong> {{ $remark->equipment->section }} / {{ $remark->equipment->machine_number }}</p>
+        <p><strong>Оборудование:</strong>{{ $remark->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $remark->shift->shift_number }} ({{ $remark->shift->date }})</p>
         <p><strong>Текст:</strong> {{ $remark->text }}</p>
         <p><strong>Тип:</strong> {{ $remark->type }}</p>

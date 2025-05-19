@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shift extends Model
 {
-    protected $fillable = ['shift_number', 'date', 'section'];
+    protected $fillable = ['shift_number', 'date', 'section_id'];
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
 
     public function processings()
     {

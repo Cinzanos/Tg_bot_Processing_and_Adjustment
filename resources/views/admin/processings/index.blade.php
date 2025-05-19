@@ -27,7 +27,7 @@
             @foreach ($processings as $processing)
                 <tr>
                     <td>{{ $processing->user->full_name }}</td>
-                    <td>{{ $processing->equipment->section }} / {{ $processing->equipment->machine_number }}</td>
+                    <td>{{ $processing->equipment->machine_number }}</td>
                     <td>{{ $processing->shift->shift_number }}</td>
                     <td>{{ $processing->start_time }}</td>
                     <td>{{ $processing->end_time ?? '-' }}</td>

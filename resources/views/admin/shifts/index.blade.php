@@ -25,7 +25,7 @@
                 <tr>
                     <td>{{ $shift->shift_number }}</td>
                     <td>{{ $shift->date }}</td>
-                    <td>{{ $shift->section }}</td>
+                    <td>{{ $shift->section->name ?? '-' }}</td>
                     <td class="space-x-2">
                         <a href="{{ route('admin.shifts.show', $shift) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Вы уверены?')" class="inline-flex items-center text-red-500 hover:underline">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0a2 2 0 01-2-2H9a2 2 0 01-2 2h10z" />
+                                    <path d="M19 7l-.867 12.142A2 2 0 0116.162 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0a2 2 0 01-2-2H9a2 2 0 01-2 2h10z" />
                                 </svg>
                                 Удалить
                             </button>

@@ -14,6 +14,29 @@ class User extends Model implements Authenticatable
 
     protected $hidden = ['password'];
 
+    public function getRoleNameAttribute(): string
+    {
+        return match ($this->role) {
+            'master' => 'Мастер',
+            'brigadier' => 'Бригадир',
+            'operator' => 'Оператор',
+            'adjuster' => 'Наладчик',
+            'admin' => 'Администратор',
+            default => 'Неизвестно',
+        };
+    }
+
+    public static function roles(): array
+    {
+        return [
+            'master' => 'Мастер',
+            'brigadier' => 'Бригадир',
+            'operator' => 'Оператор',
+            'adjuster' => 'Наладчик',
+            'admin' => 'Администратор',
+        ];
+    }
+
     public function processings()
     {
         return $this->hasMany(Processing::class);

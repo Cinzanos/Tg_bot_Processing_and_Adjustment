@@ -6,8 +6,13 @@
         <form action="{{ route('admin.reports.index') }}" method="GET" class="mb-4">
             <div class="flex space-x-4">
                 <div>
-                    <label for="section" class="block text-sm font-medium text-gray-700">Участок</label>
-                    <input type="text" name="section" id="section" class="mt-1 block w-full border rounded p-2" value="{{ request('section') }}">
+                    <label for="section_id" class="block text-sm font-medium text-gray-700">Участок</label>
+                    <select name="section_id" id="section_id" class="mt-1 block w-full border rounded p-2">
+                        <option value="">Все участки</option>
+                        @foreach ($sections as $section)
+                            <option value="{{ $section->id }}" {{ request('section_id') == $section->id ? 'selected' : '' }}>{{ $section->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700">Дата</label>
@@ -33,11 +38,10 @@
             <tr>
                 <th>№</th>
                 <th>Дата</th>
-                <th>Время</th>
                 <th>Смена/Бригада</th>
-                <th>Профессия</th>
-                <th>Сообщение создал</th>
-                <th>Участок</th>
+                <th>Участок (смена)</th>
+                <th>Сотрудник</th>
+                <th>Участок (оборудование)</th>
                 <th>Оборудование</th>
                 <th>Обработка: Время начала</th>
                 <th>Обработка: Время завершения</th>
@@ -58,89 +62,208 @@
             @foreach ($operations as $operation)
                 <tr>
                     <td>{{ $operation->id }}</td>
-                    <td>{{ $operation->shift->date }}</td>
-                    <td>{{ $operation->shift->shift_number }}</td>
-                    <td>{{ $operation->shift->shift_number }}</td>
-                    <td>{{ $operation->user->role }}</td>
-                    <td>{{ $operation->user->full_name }}</td>
-                    <td>{{ $operation->equipment->section }}</td>
+                    <td>{{ $operation->shift->date ?? '-' }}</td>
+                    <td>{{ $operation->shift->shift_number ?? '-' }}</td>
+                    <td>{{ $operation->shift->section->name ?? '-' }}</td>
+                    <td>{{ $operation->user->full_name ?? '-' }}</td>
+                    <td>{{ $operation->equipment->section->name ?? '-' }}</td>
                     <td>{{ $operation->equipment->machine_number }}</td>
-                    <td>{{ $operation->start_time }}</td>
+                    <td>{{ $operation->start_time ?? '-' }}</td>
                     <td>{{ $operation->end_time ?? '-' }}</td>
                     <td>{{ $operation->duration ?? '-' }}</td>
-                    <td>{{ $operation->adjustments->start_time ?? '-' }}</td>
-                    <td>{{ $operation->adjustments->end_time ?? '-' }}</td>
-                    <td>{{ $operation->adjustments->duration ?? '-' }}</td>
-                    <td>{{ $operation->adjustment_waitings->start_time ?? '-' }}</td>
-                    <td>{{ $operation->adjustment_waitings->end_time ?? '-' }}</td>
-                    <td>{{ $operation->adjustment_waitings->duration ?? '-' }}</td>
-                    <td>{{ $operation->downtimes->start_time ?? '-' }}</td>
-                    <td>{{ $operation->downtimes->end_time ?? '-' }}</td>
-                    <td>{{ $operation->downtimes->duration ?? '-' }}</td>
-                    <td>{{ $operation->downtimes->reason ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustments->first()->start_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustments->first()->end_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustments->first()->duration ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustmentWaitings->first()->start_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustmentWaitings->first()->end_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->adjustmentWaitings->first()->duration ?? '-' }}</td>
+                    <td>{{ $operation->equipment->downtimes->first()->start_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->downtimes->first()->end_time ?? '-' }}</td>
+                    <td>{{ $operation->equipment->downtimes->first()->duration ?? '-' }}</td>
+                    <td>{{ $operation->equipment->downtimes->first()->reason ?? '-' }}</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
 
-        <!-- Визуализация циклов состояния оборудования -->
+        <!-- Gantt-диаграммы по дням -->
         <div class="mt-6">
-            <h2 class="text-xl font-bold mb-4">Циклы состояния оборудования</h2>
-            <canvas id="equipmentCycleChart" width="400" height="200"></canvas>
-        </div>
-    </div>
+            <h2 class="text-xl font-bold mb-4">График работы оборудования</h2>
+            @php
+                // Группировка операций по дням
+                $operationsByDate = $operations->groupBy(function ($operation) {
+                    return $operation->shift->date ?? 'Unknown';
+                })->filter(function ($group, $date) {
+                    return $date !== 'Unknown';
+                });
 
-    <script>
-        // Инициализация Chart.js для визуализации циклов
-        document.addEventListener('DOMContentLoaded', function () {
-            const ctx = document.getElementById('equipmentCycleChart').getContext('2d');
-            const chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [
-                        'Обработка',
-                        'Наладка',
-                        'Ожидание наладки',
-                        'Простой'
-                    ],
-                    datasets: [{
-                        label: 'Длительность (минуты)',
-                        data: [
-                            @php
-                                $processingDuration = $operations->avg('duration') ?? 0;
-                                $adjustmentDuration = $operations->avg('adjustments.duration') ?? 0;
-                                $waitingDuration = $operations->avg('adjustment_waitings.duration') ?? 0;
-                                $downtimeDuration = $operations->avg('downtimes.duration') ?? 0;
-                                echo "$processingDuration, $adjustmentDuration, $waitingDuration, $downtimeDuration";
-                            @endphp
-                        ],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(255, 99, 132, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(255, 99, 132, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Длительность (минуты)'
+                foreach ($operationsByDate as $date => $dateOperations) {
+                    // Группировка по оборудованию
+                    $equipmentGroups = $dateOperations->groupBy('equipment_id')->map(function ($group) {
+                        return $group->first()->equipment;
+                    })->sortBy('machine_number');
+
+                    // Подготовка данных для Gantt-диаграммы
+                    $labels = $equipmentGroups->map(function ($equipment) {
+                        return $equipment->machine_number . ' (' . $equipment->machine_type . ')';
+                    })->values()->toArray();
+
+                    // Отладка данных
+                    echo "<div class='mt-2 text-sm'>Debug for $date: " . count($labels) . " станков, operations count: " . $dateOperations->count() . "</div>";
+
+                    $datasets = [];
+                    $index = 0;
+                    foreach ($equipmentGroups as $equipment) {
+                        $equipmentOperations = $dateOperations->where('equipment_id', $equipment->id);
+
+                        // Обработка (Processing)
+                        foreach ($equipmentOperations as $operation) {
+                            if ($operation->start_time && $operation->end_time) {
+                                $startDateTime = new DateTime($operation->start_time);
+                                $endDateTime = new DateTime($operation->end_time);
+                                $startOfDay = new DateTime($startDateTime->format('Y-m-d') . ' 08:00:00');
+                                $endOfDay = new DateTime($startDateTime->format('Y-m-d') . ' 22:00:00');
+
+                                if ($startDateTime >= $startOfDay && $startDateTime <= $endOfDay) {
+                                    $startMinutes = max(0, ($startDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60);
+                                    $endMinutes = min(840, ($endDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60);
+                                    $datasets[] = [
+                                        'label' => 'Обработка',
+                                        'data' => [[$startMinutes, $endMinutes]],
+                                        'backgroundColor' => 'rgba(34, 197, 94, 0.5)', // Зеленый
+                                        'borderColor' => 'rgba(34, 197, 94, 1)',
+                                        'borderWidth' => 1,
+                                        'yAxisID' => 'y',
+                                        'index' => $index
+                                    ];
+                                }
                             }
                         }
+
+                        // Наладка (Adjustments)
+                        $adjustments = $equipment->adjustments()->whereBetween('start_time', [
+                            $date . ' 08:00:00',
+                            $date . ' 22:00:00'
+                        ])->get();
+                        foreach ($adjustments as $adjustment) {
+                            if ($adjustment->start_time && $adjustment->end_time) {
+                                $startDateTime = new DateTime($adjustment->start_time);
+                                $endDateTime = new DateTime($adjustment->end_time);
+                                $startOfDay = new DateTime($date . ' 08:00:00');
+                                $startMinutes = ($startDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60;
+                                $endMinutes = ($endDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60;
+                                $datasets[] = [
+                                    'label' => 'Наладка',
+                                    'data' => [[$startMinutes, $endMinutes]],
+                                    'backgroundColor' => 'rgba(59, 130, 246, 0.5)', // Голубой
+                                    'borderColor' => 'rgba(59, 130, 246, 1)',
+                                    'borderWidth' => 1,
+                                    'yAxisID' => 'y',
+                                    'index' => $index
+                                ];
+                            }
+                        }
+
+                        // Простои (Downtimes)
+                        $downtimes = $equipment->downtimes()->whereBetween('start_time', [
+                            $date . ' 08:00:00',
+                            $date . ' 22:00:00'
+                        ])->get();
+                        foreach ($downtimes as $downtime) {
+                            if ($downtime->start_time && $downtime->end_time) {
+                                $startDateTime = new DateTime($downtime->start_time);
+                                $endDateTime = new DateTime($downtime->end_time);
+                                $startOfDay = new DateTime($date . ' 08:00:00');
+                                $startMinutes = ($startDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60;
+                                $endMinutes = ($endDateTime->getTimestamp() - $startOfDay->getTimestamp()) / 60;
+                                $datasets[] = [
+                                    'label' => 'Простой',
+                                    'data' => [[$startMinutes, $endMinutes]],
+                                    'backgroundColor' => 'rgba(234, 179, 8, 0.5)', // Желтый
+                                    'borderColor' => 'rgba(234, 179, 8, 1)',
+                                    'borderWidth' => 1,
+                                    'yAxisID' => 'y',
+                                    'index' => $index
+                                ];
+                            }
+                        }
+
+                        $index++;
                     }
+            @endphp
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-2">Дата: {{ \Carbon\Carbon::parse($date)->format('d.m.Y') }}</h3>
+                <canvas id="ganttChart_{{ \Carbon\Carbon::parse($date)->format('Ymd') }}" width="800" height="{{ max(200, count($labels) * 50) }}" style="display: block; width: 800px; height: {{ max(200, count($labels) * 50) }}px; max-height: 600px; overflow-y: auto;"></canvas>
+                <script>
+                    const ctx_{{ \Carbon\Carbon::parse($date)->format('Ymd') }} = document.getElementById('ganttChart_{{ \Carbon\Carbon::parse($date)->format('Ymd') }}').getContext('2d');
+                    const chart_{{ \Carbon\Carbon::parse($date)->format('Ymd') }} = new Chart(ctx_{{ \Carbon\Carbon::parse($date)->format('Ymd') }}, {
+                        type: 'bar',
+                        data: {
+                            labels: @json($labels),
+                            datasets: @json($datasets)
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Время'
+                                    },
+                                    min: 0,
+                                    max: 840, // 14 часов * 60 минут = 840 минут
+                                    ticks: {
+                                        stepSize: 60, // Шаг в 1 час
+                                        callback: function(value) {
+                                            const hours = Math.floor(value / 60) + 8;
+                                            const minutes = value % 60;
+                                            return `${hours.toString().padStart(2, '0')}:00`;
+                                        }
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Наименование/Номер Станка'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const dataset = context.dataset;
+                                            const data = dataset.data[context.dataIndex];
+                                            const startMinutes = data[0];
+                                            const endMinutes = data[1];
+                                            const startHours = Math.floor(startMinutes / 60) + 8;
+                                            const startMins = startMinutes % 60;
+                                            const endHours = Math.floor(endMinutes / 60) + 8;
+                                            const endMins = endMinutes % 60;
+                                            return `${dataset.label}: ${startHours.toString().padStart(2, '0')}:${startMins.toString().padStart(2, '0')} - ${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
+                                        }
+                                    }
+                                }
+                            },
+                            parsing: {
+                                xAxisKey: 'data'
+                            },
+                            barThickness: 55 // Увеличен размер полос для лучшей видимости
+                        }
+                    });
+                </script>
+            </div>
+            @php
                 }
-            });
-        });
-    </script>
+            @endphp
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    // Скрипты уже добавлены inline для каждого графика
 @endsection

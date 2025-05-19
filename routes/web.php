@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdjustmentWaitingController;
 use App\Http\Controllers\Admin\DowntimeController;
 use App\Http\Controllers\Admin\RemarkController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SectionController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,6 +31,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('adjustment-waitings', AdjustmentWaitingController::class);
         Route::resource('downtimes', DowntimeController::class);
         Route::resource('remarks', RemarkController::class);
+        Route::resource('sections', SectionController::class);
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     });

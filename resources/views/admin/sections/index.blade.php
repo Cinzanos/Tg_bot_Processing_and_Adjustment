@@ -2,45 +2,39 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Оборудование</h1>
-
-        <a href="{{ route('admin.equipment.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
+        <h1 class="text-2xl font-bold mb-4">Участки</h1>
+        <a href="{{ route('admin.sections.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
             </svg>
-            Добавить оборудование
+            Добавить участок
         </a>
-
         <table class="w-full datatable">
             <thead>
             <tr>
-                <th>Участок</th>
-                <th>Номер станка</th>
+                <th>Название</th>
                 <th>Действия</th>
             </tr>
             </thead>
             <tbody>
-            @foreach ($equipment as $item)
+            @foreach ($sections as $section)
                 <tr>
-                    <td>{{ $item->section->name ?? '-' }}</td>
-                    <td>{{ $item->machine_number }}</td>
+                    <td>{{ $section->name }}</td>
                     <td class="space-x-2">
-                        <a href="{{ route('admin.equipment.show', $item) }}" class="inline-flex items-center text-blue-500 hover:underline">
+                        <a href="{{ route('admin.sections.show', $section) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path d="M2.458 12C3.732 7.943 7.522 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7s-8.268-2.943-9.542-7z" />
                             </svg>
                             Просмотр
                         </a>
-
-                        <a href="{{ route('admin.equipment.edit', $item) }}" class="inline-flex items-center text-green-500 hover:underline">
+                        <a href="{{ route('admin.sections.edit', $section) }}" class="inline-flex items-center text-green-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                             Редактировать
                         </a>
-
-                        <form action="{{ route('admin.equipment.destroy', $item) }}" method="POST" class="inline">
+                        <form action="{{ route('admin.sections.destroy', $section) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Вы уверены?')" class="inline-flex items-center text-red-500 hover:underline">

@@ -9,7 +9,7 @@
                 <label for="equipment_id" class="block text-sm font-medium text-gray-700">Оборудование</label>
                 <select name="equipment_id" id="equipment_id" class="mt-1 block w-full border rounded p-2">
                     @foreach ($equipment as $item)
-                        <option value="{{ $item->id }}" {{ old('equipment_id') == $item->id ? 'selected' : '' }}>{{ $item->section }} / {{ $item->machine_number }}</option>
+                        <option value="{{ $item->id }}" {{ old('equipment_id') == $item->id ? 'selected' : '' }}>{{ $item->machine_number }}</option>
                     @endforeach
                 </select>
             </div>

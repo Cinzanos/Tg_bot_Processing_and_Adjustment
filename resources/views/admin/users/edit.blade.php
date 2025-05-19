@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Редактировать пользователя</h1>
+        <h1 class="text-2xl font-bold mb-4">Редактировать сотрудника</h1>
         <form action="{{ route('admin.users.update', $user) }}" method="POST">
             @csrf
             @method('PUT')
@@ -17,11 +17,11 @@
             <div class="mb-4">
                 <label for="role" class="block text-sm font-medium text-gray-700">Профессия</label>
                 <select name="role" id="role" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
-                    <option value="master" {{ old('role', $user->role) == 'master' ? 'selected' : '' }}>Мастер</option>
-                    <option value="brigadier" {{ old('role', $user->role) == 'brigadier' ? 'selected' : '' }}>Бригадир</option>
-                    <option value="operator" {{ old('role', $user->role) == 'operator' ? 'selected' : '' }}>Оператор</option>
-                    <option value="adjuster" {{ old('role', $user->role) == 'adjuster' ? 'selected' : '' }}>Наладчик</option>
-                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Админ</option>
+                    @foreach (\App\Models\User::roles() as $value => $label)
+                        <option value="{{ $value }}" {{ old('role') == $value ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div id="admin-fields" class="{{ $user->role !== 'admin' ? 'hidden' : '' }}">

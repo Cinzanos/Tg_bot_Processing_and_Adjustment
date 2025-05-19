@@ -3,7 +3,7 @@
 @section('content')
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Редактировать замечание</h1>
-        <form action="{{ route('admin.remarks.update', $remark) }}" method="POST">
+        <form action="{{ route('admin.remarks.update', $remark) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="mb-4">
@@ -18,7 +18,7 @@
                 <label for="equipment_id" class="block text-sm font-medium text-gray-700">Оборудование</label>
                 <select name="equipment_id" id="equipment_id" class="mt-1 block w-full border rounded p-2">
                     @foreach ($equipment as $item)
-                        <option value="{{ $item->id }}" {{ old('equipment_id', $remark->equipment_id) == $item->id ? 'selected' : '' }}>{{ $item->section }} / {{ $item->machine_number }}</option>
+                        <option value="{{ $item->id }}" {{ old('equipment_id', $remark->equipment_id) == $item->id ? 'selected' : '' }}>{{ $item->machine_number }}</option>
                     @endforeach
                 </select>
             </div>
@@ -35,14 +35,16 @@
                 <textarea name="text" id="text" class="mt-1 block w-full border rounded p-2">{{ old('text', $remark->text) }}</textarea>
             </div>
             <div class="mb-4">
-                <label for="photo" class="block text-sm font-medium text-gray-700">Фото (URL)</label>
-                <input type="text" name="photo" id="photo" class="mt-1 block w-full border rounded p-2" value="{{ old('photo', $remark->photo) }}">
+                <label for="photo" class="block text-sm font-medium text-gray-700">Фото (загрузка файла)</label>
+                <input type="file" name="photo" id="photo" class="mt-1 block w-full border rounded p-2">
             </div>
             <div class="mb-4">
                 <label for="type" class="block text-sm font-medium text-gray-700">Тип</label>
                 <select name="type" id="type" class="mt-1 block w-full border rounded p-2">
-                    @foreach ($types as $type)
-                        <option value="{{ $type }}" {{ old('type', $remark->type) == $type ? 'selected' : '' }}>{{ $type }}</option>
+                    @foreach (\App\Models\Remark::types() as $value => $label)
+                        <option value="{{ $value }}" {{ old('type') == $value ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
                     @endforeach
                 </select>
             </div>
