@@ -9,9 +9,23 @@ use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $sections = Section::paginate(10);
+        $query = Section::query();
+
+        // Поиск по названию
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Сортировка
+        $sort = $request->get('sort', 'name'); // По умолчанию сортировка по имени
+        $direction = $request->get('direction', 'asc'); // По умолчанию по возрастанию
+        $query->orderBy($sort, $direction);
+
+        // Пагинация
+        $sections = $query->paginate(10);
+
         return view('admin.sections.index', compact('sections'));
     }
 

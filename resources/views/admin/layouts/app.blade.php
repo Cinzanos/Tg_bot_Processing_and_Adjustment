@@ -30,6 +30,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.roles.index') }}" class="flex items-center py-2 px-4 hover:bg-gray-700">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                        Роли
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.sections.index') }}" class="flex items-center py-2 px-4 hover:bg-gray-700">
                         <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75h16.5v16.5H3.75V3.75zM9 3.75v16.5M15 3.75v16.5M3.75 9h16.5M3.75 15h16.5" />
@@ -111,6 +117,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if (session('error'))
+            <div class="bg-red-500 text-white p-4 rounded mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
         @if ($errors->any())
             <div class="bg-red-500 text-white p-4 rounded mb-4">
                 <ul>
@@ -129,5 +140,6 @@
         @yield('scripts')
     });
 </script>
+@stack('scripts')
 </body>
 </html>

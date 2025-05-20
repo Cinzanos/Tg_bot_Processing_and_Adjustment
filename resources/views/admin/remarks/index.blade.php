@@ -3,42 +3,192 @@
 @section('content')
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Замечания</h1>
+
+        <!-- Форма поиска и фильтрации -->
+        <div class="mb-4">
+            <form method="GET" action="{{ route('admin.remarks.index') }}" class="flex space-x-4">
+                <!-- Поиск по ФИО инициатора -->
+                <div>
+                    <label for="initiator_name" class="block text-sm font-medium text-gray-700">Инициатор</label>
+                    <input type="text" name="initiator_name" id="initiator_name" class="mt-1 block w-full border rounded p-2" value="{{ request('initiator_name') }}" placeholder="Введите ФИО">
+                </div>
+
+                <!-- Поиск по участку -->
+                <div>
+                    <label for="section_name" class="block text-sm font-medium text-gray-700">Участок</label>
+                    <input type="text" name="section_name" id="section_name" class="mt-1 block w-full border rounded p-2" value="{{ request('section_name') }}" placeholder="Введите название участка">
+                </div>
+
+                <!-- Поиск по номеру станка -->
+                <div>
+                    <label for="machine_number" class="block text-sm font-medium text-gray-700">Станок</label>
+                    <input type="text" name="machine_number" id="machine_number" class="mt-1 block w-full border rounded p-2" value="{{ request('machine_number') }}" placeholder="Введите номер станка">
+                </div>
+
+                <!-- Поиск по номеру смены -->
+                <div>
+                    <label for="shift_number" class="block text-sm font-medium text-gray-700">Смена</label>
+                    <input type="text" name="shift_number" id="shift_number" class="mt-1 block w-full border rounded p-2" value="{{ request('shift_number') }}" placeholder="Введите номер смены">
+                </div>
+
+                <!-- Поиск по тексту -->
+                <div>
+                    <label for="text" class="block text-sm font-medium text-gray-700">Текст</label>
+                    <input type="text" name="text" id="text" class="mt-1 block w-full border rounded p-2" value="{{ request('text') }}" placeholder="Введите текст замечания">
+                </div>
+
+                <!-- Поиск по типу -->
+                <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700">Тип</label>
+                    <select name="type" id="type" class="mt-1 block w-full border rounded p-2">
+                        <option value="">Все типы</option>
+                        @foreach (\App\Models\Remark::types() as $value => $label)
+                            <option value="{{ $value }}" {{ request('type') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Кнопка поиска -->
+                <div class="mt-6">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Искать
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <a href="{{ route('admin.remarks.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
             </svg>
             Добавить замечание
         </a>
-        <table class="w-full datatable">
+
+        <table class="w-full border-collapse">
             <thead>
-            <tr>
-                <th>Инициатор</th>
-                <th>Профессия</th>
-                <th>Станок</th>
-                <th>Смена</th>
-                <th>Текст</th>
-                <th>Тип</th>
-                <th>Фото</th>
-                <th>Действия</th>
+            <tr class="bg-gray-200">
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'user.full_name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Инициатор
+                        <span class="ml-1">
+                            @if (request('sort') === 'user.full_name' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'user.full_name' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'user.role_name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Профессия
+                        <span class="ml-1">
+                            @if (request('sort') === 'user.role_name' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'user.role_name' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'shift.shift_number', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Смена
+                        <span class="ml-1">
+                            @if (request('sort') === 'shift.shift_number' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'shift.shift_number' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'equipment.section.name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Участок
+                        <span class="ml-1">
+                            @if (request('sort') === 'equipment.section.name' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'equipment.section.name' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'equipment.machine_number', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Станок
+                        <span class="ml-1">
+                            @if (request('sort') === 'equipment.machine_number' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'equipment.machine_number' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">Текст</th>
+                <th class="border p-2">Фото</th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'type', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Тип
+                        <span class="ml-1">
+                            @if (request('sort') === 'type' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'type' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Время создания
+                        <span class="ml-1">
+                            @if (request('sort') === 'created_at' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'created_at' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">Действия</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($remarks as $remark)
-                <tr>
-                    <td>{{ $remark->user->full_name }}</td>
-                    <td>{{ $remark->user->role_name }}</td>
-                    <td>{{ $remark->equipment->machine_number }}</td>
-                    <td>{{ $remark->shift->shift_number }}</td>
-                    <td>{{ Str::limit($remark->text, 50) }}</td>
-                    <td>{{ $remark->type_name }}</td>
-                    <td>
+                <tr class="border-t hover:bg-gray-100">
+                    <td class="border p-2">{{ $remark->user->full_name }}</td>
+                    <td class="border p-2">{{ $remark->user->role_name }}</td>
+                    <td class="border p-2">{{ $remark->shift->shift_number }}</td>
+                    <td class="border p-2">{{ $remark->equipment->section->name ?? '-' }}</td>
+                    <td class="border p-2">{{ $remark->equipment->machine_number }}</td>
+                    <td class="border p-2">{{ Str::limit($remark->text, 50) }}</td>
+                    <td class="border p-2">
                         @if ($remark->photo)
                             <a href="{{ $remark->photo }}" target="_blank" class="text-blue-500 hover:underline">Фото</a>
                         @else
                             -
                         @endif
                     </td>
-                    <td>
+                    <td class="border p-2">{{ $remark->type_name }}</td>
+                    <td class="border p-2">{{ $remark->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="border p-2 space-x-2">
                         <a href="{{ route('admin.remarks.show', $remark) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -67,5 +217,10 @@
             @endforeach
             </tbody>
         </table>
+
+        <!-- Пагинация -->
+        <div class="mt-4 flex justify-center">
+            {{ $remarks->appends(request()->query())->links('vendor.pagination.tailwind') }}
+        </div>
     </div>
 @endsection

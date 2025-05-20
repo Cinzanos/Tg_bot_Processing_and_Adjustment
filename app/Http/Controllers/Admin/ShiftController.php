@@ -10,9 +10,37 @@ use Illuminate\Support\Facades\Validator;
 
 class ShiftController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $shifts = Shift::with('section')->paginate(10);
+        $query = Shift::with('section');
+
+        // Поиск
+        if ($request->has('shift_number') && $request->shift_number != '') {
+            $query->where('shift_number', 'like', '%' . $request->shift_number . '%');
+        }
+        if ($request->has('date') && $request->date != '') {
+            $query->whereDate('date', $request->date);
+        }
+        if ($request->has('section_name') && $request->section_name != '') {
+            $query->whereHas('section', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->section_name . '%');
+            });
+        }
+
+        // Сортировка
+        $sort = $request->get('sort', 'shift_number'); // По умолчанию сортировка по номеру смены
+        $direction = $request->get('direction', 'asc'); // По умолчанию по возрастанию
+        if ($sort === 'section.name') {
+            $query->join('sections', 'shifts.section_id', '=', 'sections.id')
+                ->orderBy('sections.name', $direction)
+                ->select('shifts.*');
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        // Пагинация
+        $shifts = $query->paginate(10);
+
         return view('admin.shifts.index', compact('shifts'));
     }
 

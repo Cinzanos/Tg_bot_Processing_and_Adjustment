@@ -6,23 +6,75 @@ use App\Http\Controllers\Controller;
 use App\Models\AdjustmentWaiting;
 use App\Models\Equipment;
 use App\Models\Shift;
+use App\Models\Section;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AdjustmentWaitingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $adjustmentWaitings = AdjustmentWaiting::with(['equipment', 'shift'])->paginate(10);
+        $query = AdjustmentWaiting::with(['equipment', 'shift', 'equipment.section']);
+
+        // Поиск и фильтрация
+        if ($request->has('section_name') && $request->section_name != '') {
+            $query->whereHas('equipment.section', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->section_name . '%');
+            });
+        }
+        if ($request->has('machine_number') && $request->machine_number != '') {
+            $query->whereHas('equipment', function ($q) use ($request) {
+                $q->where('machine_number', 'like', '%' . $request->machine_number . '%');
+            });
+        }
+        if ($request->has('shift_number') && $request->shift_number != '') {
+            $query->whereHas('shift', function ($q) use ($request) {
+                $q->where('shift_number', 'like', '%' . $request->shift_number . '%');
+            });
+        }
+        if ($request->has('start_time') && $request->start_time != '') {
+            $query->where('start_time', '>=', $request->start_time);
+        }
+
+        // Сортировка
+        $sort = $request->get('sort', 'start_time'); // По умолчанию сортировка по времени начала
+        $direction = $request->get('direction', 'asc'); // По умолчанию по возрастанию
+        if ($sort === 'equipment.machine_number') {
+            $query->join('equipment', 'adjustment_waitings.equipment_id', '=', 'equipment.id')
+                ->orderBy('equipment.machine_number', $direction)
+                ->select('adjustment_waitings.*');
+        } elseif ($sort === 'section.name') {
+            $query->join('equipment', 'adjustment_waitings.equipment_id', '=', 'equipment.id')
+                ->join('sections', 'equipment.section_id', '=', 'sections.id')
+                ->orderBy('sections.name', $direction)
+                ->select('adjustment_waitings.*');
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        // Пагинация
+        $adjustmentWaitings = $query->paginate(10);
+
         return view('admin.adjustment-waitings.index', compact('adjustmentWaitings'));
     }
 
     public function create()
     {
-        $equipment = Equipment::all();
         $shifts = Shift::all();
-        return view('admin.adjustment-waitings.create', compact('equipment', 'shifts'));
+        return view('admin.adjustment-waitings.create', compact('shifts'));
+    }
+
+    public function getSectionByShift(Shift $shift)
+    {
+        $section = $shift->section;
+        return response()->json($section);
+    }
+
+    public function getEquipmentBySection(Section $section)
+    {
+        $equipment = $section->equipment;
+        return response()->json($equipment);
     }
 
     public function store(Request $request)
@@ -54,9 +106,8 @@ class AdjustmentWaitingController extends Controller
 
     public function edit(AdjustmentWaiting $adjustmentWaiting)
     {
-        $equipment = Equipment::all();
         $shifts = Shift::all();
-        return view('admin.adjustment-waitings.edit', compact('adjustmentWaiting', 'equipment', 'shifts'));
+        return view('admin.adjustment-waitings.edit', compact('adjustmentWaiting', 'shifts'));
     }
 
     public function update(Request $request, AdjustmentWaiting $adjustmentWaiting)

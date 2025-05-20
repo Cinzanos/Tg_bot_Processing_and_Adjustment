@@ -2,20 +2,33 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class AdminSeeder extends Seeder
 {
     public function run()
     {
-        User::create([
-            'full_name' => 'Админ Админович',
-            'telegram_id' => 'admin_000000', // Заглушка, замените на реальный Telegram ID, если нужно
-            'role' => 'admin',
-            'login' => 'admin',
-            'password' => Hash::make('admin123'), // Пароль: admin123
-        ]);
+        // Получаем роль "Администратор"
+        $adminRole = Role::where('name', 'Администратор')->firstOrFail();
+
+        // Создаем генератор данных
+        $faker = Faker::create();
+
+        // Сколько админов создавать
+        $count = 20;
+
+        for ($i = 0; $i < $count; $i++) {
+            User::create([
+                'full_name' => $faker->name,
+                'telegram_id' => 'tg_' . $faker->unique()->numberBetween(100000, 999999),
+                'role_id' => $adminRole->id,
+                'login' => $faker->unique()->userName,
+                'password' => Hash::make('admin123'), // один и тот же пароль
+            ]);
+        }
     }
 }

@@ -4,6 +4,42 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Ожидание наладки</h1>
 
+        <!-- Форма поиска и фильтрации -->
+        <div class="mb-4">
+            <form method="GET" action="{{ route('admin.adjustment-waitings.index') }}" class="flex space-x-4">
+                <!-- Поиск по участку -->
+                <div>
+                    <label for="section_name" class="block text-sm font-medium text-gray-700">Участок</label>
+                    <input type="text" name="section_name" id="section_name" class="mt-1 block w-full border rounded p-2" value="{{ request('section_name') }}" placeholder="Введите название участка">
+                </div>
+
+                <!-- Поиск по станку -->
+                <div>
+                    <label for="machine_number" class="block text-sm font-medium text-gray-700">Станок</label>
+                    <input type="text" name="machine_number" id="machine_number" class="mt-1 block w-full border rounded p-2" value="{{ request('machine_number') }}" placeholder="Введите номер станка">
+                </div>
+
+                <!-- Поиск по номеру смены -->
+                <div>
+                    <label for="shift_number" class="block text-sm font-medium text-gray-700">Смена</label>
+                    <input type="text" name="shift_number" id="shift_number" class="mt-1 block w-full border rounded p-2" value="{{ request('shift_number') }}" placeholder="Введите номер смены">
+                </div>
+
+                <!-- Поиск по времени начала -->
+                <div>
+                    <label for="start_time" class="block text-sm font-medium text-gray-700">Время начала</label>
+                    <input type="datetime-local" name="start_time" id="start_time" class="mt-1 block w-full border rounded p-2" value="{{ request('start_time') }}">
+                </div>
+
+                <!-- Кнопка поиска -->
+                <div class="mt-6">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Искать
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <a href="{{ route('admin.adjustment-waitings.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
@@ -11,26 +47,80 @@
             Добавить ожидание
         </a>
 
-        <table class="w-full datatable">
+        <table class="w-full border-collapse">
             <thead>
-            <tr>
-                <th>Станок</th>
-                <th>Смена</th>
-                <th>Время начала</th>
-                <th>Время завершения</th>
-                <th>Длительность (мин)</th>
-                <th>Действия</th>
+            <tr class="bg-gray-200">
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'equipment.machine_number', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Станок
+                        <span class="ml-1">
+                            @if (request('sort') === 'equipment.machine_number' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'equipment.machine_number' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'section.name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Участок
+                        <span class="ml-1">
+                            @if (request('sort') === 'section.name' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'section.name' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'shift.shift_number', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Смена
+                        <span class="ml-1">
+                            @if (request('sort') === 'shift.shift_number' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'shift.shift_number' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'start_time', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        Время начала
+                        <span class="ml-1">
+                            @if (request('sort') === 'start_time' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'start_time' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">Время завершения</th>
+                <th class="border p-2">Длительность (мин)</th>
+                <th class="border p-2">Действия</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($adjustmentWaitings as $waiting)
-                <tr>
-                    <td>{{ $waiting->equipment->machine_number }}</td>
-                    <td>{{ $waiting->shift->shift_number }}</td>
-                    <td>{{ $waiting->start_time }}</td>
-                    <td>{{ $waiting->end_time ?? '-' }}</td>
-                    <td>{{ $waiting->duration ?? '-' }}</td>
-                    <td class="space-x-2">
+                <tr class="border-t hover:bg-gray-100">
+                    <td class="border p-2">{{ $waiting->equipment->machine_number }}</td>
+                    <td class="border p-2">{{ $waiting->equipment->section->name ?? '-' }}</td>
+                    <td class="border p-2">{{ $waiting->shift->shift_number }}</td>
+                    <td class="border p-2">{{ $waiting->start_time }}</td>
+                    <td class="border p-2">{{ $waiting->end_time ?? '-' }}</td>
+                    <td class="border p-2">{{ $waiting->duration ?? '-' }}</td>
+                    <td class="border p-2 space-x-2">
                         <a href="{{ route('admin.adjustment-waitings.show', $waiting) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -38,14 +128,12 @@
                             </svg>
                             Просмотр
                         </a>
-
                         <a href="{{ route('admin.adjustment-waitings.edit', $waiting) }}" class="inline-flex items-center text-green-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                             Редактировать
                         </a>
-
                         <form action="{{ route('admin.adjustment-waitings.destroy', $waiting) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
@@ -61,5 +149,10 @@
             @endforeach
             </tbody>
         </table>
+
+        <!-- Пагинация внизу по центру с Tailwind -->
+        <div class="mt-4 flex justify-center">
+            {{ $adjustmentWaitings->appends(request()->query())->links('vendor.pagination.tailwind') }}
+        </div>
     </div>
 @endsection

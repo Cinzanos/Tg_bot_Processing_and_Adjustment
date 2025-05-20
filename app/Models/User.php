@@ -10,31 +10,23 @@ class User extends Model implements Authenticatable
 {
     use AuthenticatableTrait;
 
-    protected $fillable = ['full_name', 'telegram_id', 'role', 'login', 'password'];
+    protected $fillable = ['full_name', 'telegram_id', 'role_id', 'login', 'password'];
 
     protected $hidden = ['password'];
 
-    public function getRoleNameAttribute(): string
+    public function role()
     {
-        return match ($this->role) {
-            'master' => 'Мастер',
-            'brigadier' => 'Бригадир',
-            'operator' => 'Оператор',
-            'adjuster' => 'Наладчик',
-            'admin' => 'Администратор',
-            default => 'Неизвестно',
-        };
+        return $this->belongsTo(Role::class);
     }
 
-    public static function roles(): array
+    public function getRoleNameAttribute(): string
     {
-        return [
-            'master' => 'Мастер',
-            'brigadier' => 'Бригадир',
-            'operator' => 'Оператор',
-            'adjuster' => 'Наладчик',
-            'admin' => 'Администратор',
-        ];
+        return $this->role ? $this->role->name : 'Неизвестно';
+    }
+
+    public static function roles()
+    {
+        return Role::pluck('name', 'id')->toArray();
     }
 
     public function processings()
@@ -59,6 +51,6 @@ class User extends Model implements Authenticatable
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role && $this->role->name === 'Администратор';
     }
 }

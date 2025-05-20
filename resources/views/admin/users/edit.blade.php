@@ -9,29 +9,44 @@
             <div class="mb-4">
                 <label for="full_name" class="block text-sm font-medium text-gray-700">ФИО</label>
                 <input type="text" name="full_name" id="full_name" class="mt-1 block w-full border rounded p-2" value="{{ old('full_name', $user->full_name) }}">
+                @error('full_name')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div class="mb-4">
                 <label for="telegram_id" class="block text-sm font-medium text-gray-700">Telegram ID</label>
                 <input type="text" name="telegram_id" id="telegram_id" class="mt-1 block w-full border rounded p-2" value="{{ old('telegram_id', $user->telegram_id) }}">
+                @error('telegram_id')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div class="mb-4">
-                <label for="role" class="block text-sm font-medium text-gray-700">Профессия</label>
-                <select name="role" id="role" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
-                    @foreach (\App\Models\User::roles() as $value => $label)
-                        <option value="{{ $value }}" {{ old('role') == $value ? 'selected' : '' }}>
-                            {{ $label }}
+                <label for="role_id" class="block text-sm font-medium text-gray-700">Профессия</label>
+                <select name="role_id" id="role_id" class="mt-1 block w-full border rounded p-2" onchange="toggleAdminFields()">
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
+                            {{ $role->name }}
                         </option>
                     @endforeach
                 </select>
+                @error('role_id')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
-            <div id="admin-fields" class="{{ $user->role !== 'admin' ? 'hidden' : '' }}">
+            <div id="admin-fields" class="{{ $user->role && $user->role->name !== 'Администратор' ? 'hidden' : '' }}">
                 <div class="mb-4">
                     <label for="login" class="block text-sm font-medium text-gray-700">Логин</label>
                     <input type="text" name="login" id="login" class="mt-1 block w-full border rounded p-2" value="{{ old('login', $user->login) }}">
+                    @error('login')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700">Пароль (оставьте пустым, чтобы не менять)</label>
                     <input type="password" name="password" id="password" class="mt-1 block w-full border rounded p-2">
+                    @error('password')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="mb-4">
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Подтверждение пароля</label>
@@ -53,9 +68,10 @@
 
     <script>
         function toggleAdminFields() {
-            const role = document.getElementById('role').value;
+            const roleId = document.getElementById('role_id').value;
+            const adminRoleId = @json($adminRoleId);
             const adminFields = document.getElementById('admin-fields');
-            adminFields.classList.toggle('hidden', role !== 'admin');
+            adminFields.classList.toggle('hidden', roleId != adminRoleId);
         }
     </script>
 @endsection

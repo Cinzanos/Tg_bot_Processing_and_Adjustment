@@ -10,9 +10,34 @@ use Illuminate\Support\Facades\Validator;
 
 class EquipmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $equipment = Equipment::with('section')->paginate(10);
+        $query = Equipment::with('section');
+
+        // Поиск и фильтрация
+        if ($request->has('machine_number') && $request->machine_number != '') {
+            $query->where('machine_number', 'like', '%' . $request->machine_number . '%');
+        }
+        if ($request->has('section_name') && $request->section_name != '') {
+            $query->whereHas('section', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->section_name . '%');
+            });
+        }
+
+        // Сортировка
+        $sort = $request->get('sort', 'machine_number'); // По умолчанию сортировка по номеру станка
+        $direction = $request->get('direction', 'asc'); // По умолчанию по возрастанию
+        if ($sort === 'section.name') {
+            $query->join('sections', 'equipment.section_id', '=', 'sections.id')
+                ->orderBy('sections.name', $direction)
+                ->select('equipment.*');
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        // Пагинация
+        $equipment = $query->paginate(10);
+
         return view('admin.equipment.index', compact('equipment'));
     }
 

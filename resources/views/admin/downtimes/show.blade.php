@@ -4,8 +4,9 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Простой</h1>
         <p><strong>Инициатор:</strong> {{ $downtime->user->full_name }}</p>
-        <p><strong>Оборудование:</strong>{{ $downtime->equipment->machine_number }}</p>
         <p><strong>Смена:</strong> {{ $downtime->shift->shift_number }} ({{ $downtime->shift->date }})</p>
+        <p><strong>Участок:</strong> {{ $downtime->equipment->section->name ?? '-' }}</p>
+        <p><strong>Оборудование:</strong>{{ $downtime->equipment->machine_number }}</p>
         <p><strong>Время начала:</strong> {{ $downtime->start_time }}</p>
         <p><strong>Время завершения:</strong> {{ $downtime->end_time ?? '-' }}</p>
         <p><strong>Длительность (мин):</strong> {{ $downtime->duration ?? '-' }}</p>

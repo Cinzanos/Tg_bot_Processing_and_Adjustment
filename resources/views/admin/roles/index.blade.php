@@ -2,28 +2,13 @@
 
 @section('content')
     <div class="bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Участки</h1>
+        <h1 class="text-2xl font-bold mb-4">Роли</h1>
 
-        <!-- Форма поиска -->
-        <div class="mb-4">
-            <form method="GET" action="{{ route('admin.sections.index') }}" class="flex space-x-4">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Название участка</label>
-                    <input type="text" name="name" id="name" class="mt-1 block w-full border rounded p-2" value="{{ request('name') }}" placeholder="Введите название участка">
-                </div>
-                <div class="mt-6">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Искать
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <a href="{{ route('admin.sections.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
+        <a href="{{ route('admin.roles.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
             </svg>
-            Добавить участок
+            Добавить роль
         </a>
 
         <table class="w-full border-collapse">
@@ -47,24 +32,17 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($sections as $section)
+            @foreach ($roles as $role)
                 <tr class="border-t hover:bg-gray-100">
-                    <td class="border p-2">{{ $section->name }}</td>
+                    <td class="border p-2">{{ $role->name }}</td>
                     <td class="border p-2 space-x-2">
-                        <a href="{{ route('admin.sections.show', $section) }}" class="inline-flex items-center text-blue-500 hover:underline">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path d="M2.458 12C3.732 7.943 7.522 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7s-8.268-2.943-9.542-7z" />
-                            </svg>
-                            Просмотр
-                        </a>
-                        <a href="{{ route('admin.sections.edit', $section) }}" class="inline-flex items-center text-green-500 hover:underline">
+                        <a href="{{ route('admin.roles.edit', $role) }}" class="inline-flex items-center text-green-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                             Редактировать
                         </a>
-                        <form action="{{ route('admin.sections.destroy', $section) }}" method="POST" class="inline">
+                        <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Вы уверены?')" class="inline-flex items-center text-red-500 hover:underline">
@@ -82,7 +60,7 @@
 
         <!-- Пагинация внизу по центру с Tailwind -->
         <div class="mt-4 flex justify-center">
-            {{ $sections->appends(request()->query())->links('vendor.pagination.tailwind') }}
+            {{ $roles->links('vendor.pagination.tailwind') }}
         </div>
     </div>
 @endsection

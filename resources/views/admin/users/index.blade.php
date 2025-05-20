@@ -4,6 +4,32 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4">Сотрудники</h1>
 
+        <!-- Форма поиска -->
+        <div class="mb-4">
+            <form method="GET" action="{{ route('admin.users.index') }}" class="flex space-x-4">
+                <div>
+                    <label for="full_name" class="block text-sm font-medium text-gray-700">ФИО</label>
+                    <input type="text" name="full_name" id="full_name" class="mt-1 block w-full border rounded p-2" value="{{ request('full_name') }}" placeholder="Введите ФИО">
+                </div>
+                <div>
+                    <label for="role_id" class="block text-sm font-medium text-gray-700">Профессия</label>
+                    <select name="role_id" id="role_id" class="mt-1 block w-full border rounded p-2">
+                        <option value="">Все профессии</option>
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>
+                                {{ $role->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Искать
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <a href="{{ route('admin.users.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 4v16m8-8H4" />
@@ -11,22 +37,35 @@
             Добавить сотрудника
         </a>
 
-        <table class="w-full datatable">
+        <table class="w-full border-collapse">
             <thead>
-            <tr>
-                <th>ФИО</th>
-                <th>Telegram ID</th>
-                <th>Профессия</th>
-                <th>Действия</th>
+            <tr class="bg-gray-200">
+                <th class="border p-2">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'full_name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center">
+                        ФИО
+                        <span class="ml-1">
+                            @if (request('sort') === 'full_name' && request('direction') === 'asc')
+                                ▼
+                            @elseif (request('sort') === 'full_name' && request('direction') === 'desc')
+                                ▲
+                            @else
+                                ↕
+                            @endif
+                        </span>
+                    </a>
+                </th>
+                <th class="border p-2">Telegram ID</th>
+                <th class="border p-2">Профессия</th>
+                <th class="border p-2">Действия</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($users as $user)
-                <tr>
-                    <td>{{ $user->full_name }}</td>
-                    <td>{{ $user->telegram_id }}</td>
-                    <td>{{ $user->role_name }}</td>
-                    <td class="space-x-2">
+                <tr class="border-t hover:bg-gray-100">
+                    <td class="border p-2">{{ $user->full_name }}</td>
+                    <td class="border p-2">{{ $user->telegram_id }}</td>
+                    <td class="border p-2">{{ $user->role_name }}</td>
+                    <td class="border p-2 space-x-2">
                         <a href="{{ route('admin.users.show', $user) }}" class="inline-flex items-center text-blue-500 hover:underline">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -57,5 +96,10 @@
             @endforeach
             </tbody>
         </table>
+
+        <!-- Пагинация внизу по центру с Tailwind -->
+        <div class="mt-4 flex justify-center">
+            {{ $users->appends(request()->query())->links('vendor.pagination.tailwind') }}
+        </div>
     </div>
 @endsection
