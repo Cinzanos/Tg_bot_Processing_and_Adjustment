@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('processings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Оператор
-            $table->foreignId('equipment_id')->constrained()->onDelete('cascade'); // Станок
-            $table->foreignId('shift_id')->constrained()->onDelete('cascade'); // Смена
-            $table->dateTime('start_time'); // Время начала обработки
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade'); // Оператор
+            $table->foreignId('equipment_id')->nullable()->constrained()->onDelete('cascade'); // Станок
+            $table->foreignId('shift_id')->nullable()->constrained()->onDelete('cascade'); // Смена
+            $table->dateTime('start_time')->nullable(); // Время начала обработки
             $table->dateTime('end_time')->nullable(); // Время завершения обработки
             $table->integer('duration')->nullable(); // Длительность в минутах
             $table->timestamps();

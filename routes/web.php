@@ -42,6 +42,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('section/{section}/equipment', [RemarkController::class, 'getEquipmentBySection']);
         Route::resource('sections', SectionController::class);
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/shifts', [ReportController::class, 'getShifts']);
+        Route::get('/reports/sections', [ReportController::class, 'getSections']);
         Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
 });

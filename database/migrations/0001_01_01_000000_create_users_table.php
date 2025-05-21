@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name'); // ФИО сотрудника
+            $table->string('full_name')->nullable(); // ФИО сотрудника
             $table->string('telegram_id')->unique(); // Telegram ID
-            $table->foreignId('role_id')->constrained()->onDelete('restrict');
+            $table->foreignId('role_id')->nullable()->constrained()->onDelete('restrict');
             $table->string('login')->nullable()->unique(); // Логин для админки
             $table->string('password')->nullable(); // Пароль для админки
             $table->timestamps();
